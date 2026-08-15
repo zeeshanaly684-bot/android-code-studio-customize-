@@ -50,37 +50,9 @@ jobs:
           distribution: "adopt"
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-      - name: Generate release keystore (if missing)
-        id: keystore
-        run: |
-          set -euo pipefail
-          mkdir -p signing
-          if [ ! -f signing/signing-key.jks ]; then
-            KEYSTORE_PASS="${{ secrets.SIGNING_KEY_PASSWORD || 'ZeeshanStudio' }}"
-            keytool -genkeypair -alias androidcs -keyalg RSA -keysize 2048 -validity 10000 \
-              -keystore signing/signing-key.jks \
-              -storepass "$KEYSTORE_PASS" -keypass "$KEYSTORE_PASS" \
-              -dname "CN=Zeeshan Studio, OU=Mobile, O=Zeeshan, L=Studio, S=Studio, C=PK"
-          fi
-          echo "store_password=${KEYSTORE_PASS}" >> "$GITHUB_ENV"
-          echo "key_password=${KEYSTORE_PASS}" >> "$GITHUB_ENV"
-      - name: Write local.properties
-        run: |
-          cat > local.properties <<EOF
-          signing.storeFile=signing/signing-key.jks
-          signing.storePassword=${{ env.store_password }}
-          signing.keyAlias=androidcs
-          signing.keyPassword=${{ env.key_password }}
-          EOF
       - name: Build Debug APK
-        env:
-          SIGNING_STORE_PASSWORD: ${{ env.store_password }}
-          SIGNING_KEY_PASSWORD: ${{ env.key_password }}
         run: ./gradlew assembleDebug
-      - name: Build Release APK
-        env:
-          SIGNING_STORE_PASSWORD: ${{ env.store_password }}
-          SIGNING_KEY_PASSWORD: ${{ env.key_password }}
+      - name: Build Unsigned Release APK
         run: ./gradlew assembleRelease
       - name: List built APKs
         run: |
