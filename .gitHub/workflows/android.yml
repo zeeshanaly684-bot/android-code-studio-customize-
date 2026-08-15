@@ -1,0 +1,142 @@
+name: Build Zeeshan Studio APKs
+
+on:
+  push:
+    branches:
+      - "main"
+      - "dev"
+      - "release/**"
+      - "arena/**"
+    paths-ignore:
+      - "**.md"
+      - "whatsnew/**"
+  pull_request:
+    branches: [ "main", "dev" ]
+    paths-ignore:
+      - "**.md"
+      - "whatsnew/**"
+  workflow_dispatch:
+    inputs:
+      main_version:
+        description: "Base version name (e.g. 1.0.0)"
+        required: false
+        default: "1.0.0"
+      revision:
+        description: "Revision number (e.g. 05)"
+        required: false
+        default: "05"
+
+permissions:
+  contents: write
+
+jobs:
+  build_apks:
+    name: Build debug.apk & release.apk
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      MAIN_VERSION: ${{ github.event.inputs.main_version || '1.0.0' }}
+      REVISION_NUM: ${{ github.event.inputs.revision || '05' }}
+    steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "adopt"
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+      - name: Generate release keystore (if missing)
+        id: keystore
+        run: |
+          set -euo pipefail
+          mkdir -p signing
+          if [ ! -f signing/signing-key.jks ]; then
+            KEYSTORE_PASS="${{ secrets.SIGNING_KEY_PASSWORD || 'ZeeshanStudio' }}"
+            keytool -genkeypair -alias androidcs -keyalg RSA -keysize 2048 -validity 10000 \
+              -keystore signing/signing-key.jks \
+              -storepass "$KEYSTORE_PASS" -keypass "$KEYSTORE_PASS" \
+              -dname "CN=Zeeshan Studio, OU=Mobile, O=Zeeshan, L=Studio, S=Studio, C=PK"
+          fi
+          echo "store_password=${KEYSTORE_PASS}" >> "$GITHUB_ENV"
+          echo "key_password=${KEYSTORE_PASS}" >> "$GITHUB_ENV"
+      - name: Write local.properties
+        run: |
+          cat > local.properties <<EOF
+          signing.storeFile=signing/signing-key.jks
+          signing.storePassword=${{ env.store_password }}
+          signing.keyAlias=androidcs
+          signing.keyPassword=${{ env.key_password }}
+          EOF
+      - name: Build Debug APK
+        env:
+          SIGNING_STORE_PASSWORD: ${{ env.store_password }}
+          SIGNING_KEY_PASSWORD: ${{ env.key_password }}
+        run: ./gradlew assembleDebug
+      - name: Build Release APK
+        env:
+          SIGNING_STORE_PASSWORD: ${{ env.store_password }}
+          SIGNING_KEY_PASSWORD: ${{ env.key_password }}
+        run: ./gradlew assembleRelease
+      - name: List built APKs
+        run: |
+          echo "=== Debug APKs ==="
+          ls -la core/app/build/outputs/apk/debug/ || true
+          echo "=== Release APKs ==="
+          ls -la core/app/build/outputs/apk/release/ || true
+      - name: Upload debug.apk artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug.apk
+          path: core/app/build/outputs/apk/debug/*universal*.apk
+        if: always()
+      - name: Upload debug APKs (per-ABI)
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apks-per-abi
+          path: |
+            core/app/build/outputs/apk/debug/*arm64-v8a*.apk
+            core/app/build/outputs/apk/debug/*armeabi-v7a*.apk
+        if: always()
+      - name: Upload release.apk artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release.apk
+          path: core/app/build/outputs/apk/release/*universal*.apk
+        if: always()
+      - name: Upload release APKs (per-ABI)
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apks-per-abi
+          path: |
+            core/app/build/outputs/apk/release/*arm64-v8a*.apk
+            core/app/build/outputs/apk/release/*armeabi-v7a*.apk
+        if: always()
+  publish:
+    name: Attach APKs to GitHub Release
+    runs-on: ubuntu-latest
+    needs: build_apks
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    steps:
+      - name: Download all APKs
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Create / update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.MAIN_VERSION }}+gh.r${{ env.REVISION_NUM }}
+          name: "Zeeshan Studio v${{ env.MAIN_VERSION }}+gh.r${{ env.REVISION_NUM }}"
+          generate_release_notes: true
+          files: |
+            dist/**/*.apk
+          fail_on_unmatched_files: false
