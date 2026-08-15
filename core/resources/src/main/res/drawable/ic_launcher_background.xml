@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Zeeshan Studio launcher background: dark glass gradient with cyan/purple glow. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="rectangle">
+      <gradient
+        android:angle="45"
+        android:startColor="#0F0C20"
+        android:centerColor="#171332"
+        android:endColor="#1A1D24"
+        android:type="linear" />
+    </shape>
+  </item>
+  <item>
+    <shape android:shape="rectangle">
+      <gradient
+        android:centerX="0.15"
+        android:centerY="0.1"
+        android:gradientRadius="0.8"
+        android:startColor="#5900F2FE"
+        android:centerColor="#2E00F2FE"
+        android:endColor="#0000F2FE"
+        android:type="radial" />
+    </shape>
+  </item>
+  <item>
+    <shape android:shape="rectangle">
+      <gradient
+        android:centerX="0.9"
+        android:centerY="0.95"
+        android:gradientRadius="0.9"
+        android:startColor="#594FACFE"
+        android:centerColor="#2E4FACFE"
+        android:endColor="#004FACFE"
+        android:type="radial" />
+    </shape>
+  </item>
+</layer-list>

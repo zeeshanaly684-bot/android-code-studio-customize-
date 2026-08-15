@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Zeeshan Studio branded splash background (dark glass). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <shape android:shape="rectangle">
+      <gradient
+        android:angle="45"
+        android:startColor="#0F0C20"
+        android:centerColor="#171332"
+        android:endColor="#1A1D24"
+        android:type="linear" />
+    </shape>
+  </item>
+  <item>
+    <shape android:shape="rectangle">
+      <gradient
+        android:centerX="0.2"
+        android:centerY="0.15"
+        android:gradientRadius="0.9"
+        android:startColor="#6600F2FE"
+        android:centerColor="#3300F2FE"
+        android:endColor="#0000F2FE"
+        android:type="radial" />
+    </shape>
+  </item>
+  <item>
+    <shape android:shape="rectangle">
+      <gradient
+        android:centerX="0.85"
+        android:centerY="0.9"
+        android:gradientRadius="0.9"
+        android:startColor="#664FACFE"
+        android:centerColor="#334FACFE"
+        android:endColor="#004FACFE"
+        android:type="radial" />
+    </shape>
+  </item>
+</layer-list>

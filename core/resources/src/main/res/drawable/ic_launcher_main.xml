@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Zeeshan Studio launcher foreground: glass chip with bold "Z" monogram. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+  android:width="108dp"
+  android:height="108dp"
+  android:viewportWidth="108"
+  android:viewportHeight="108">
+
+  <!-- Frosted glass chip -->
+  <path
+    android:pathData="M 30,22 C 26,22 22,26 22,30 L 22,78 C 22,82 26,86 30,86 L 78,86 C 82,86 86,82 86,78 L 86,30 C 86,26 82,22 78,22 Z"
+    android:fillColor="#14FFFFFF"
+    android:strokeColor="#33FFFFFF"
+    android:strokeWidth="2" />
+
+  <!-- Bold "Z" monogram -->
+  <path
+    android:pathData="M 34,38 L 74,38 L 74,46 L 48,64 L 74,64 L 74,72 L 34,72 L 34,64 L 60,46 L 34,46 Z"
+    android:fillColor="#FFFFFF"
+    android:fillType="nonZero" />
+
+</vector>

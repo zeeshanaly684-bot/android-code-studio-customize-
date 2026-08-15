@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Zeeshan Studio branded splash screen. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@drawable/bg_splash_gradient">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="32dp">
+
+    <ImageView
+      android:id="@+id/splash_logo"
+      android:layout_width="96dp"
+      android:layout_height="96dp"
+      android:alpha="0"
+      android:contentDescription="@string/app_name"
+      android:scaleType="fitCenter"
+      android:src="@drawable/ic_launcher_fg_vector"
+      app:layout_constraintBottom_toTopOf="@id/splash_title"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.5"
+      app:layout_constraintVertical_chainStyle="packed"
+      tools:ignore="ContentDescription" />
+
+    <TextView
+      android:id="@+id/splash_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      android:alpha="0"
+      android:fontFamily="sans-serif-black"
+      android:text="@string/app_name"
+      android:textColor="#FFFFFF"
+      android:textSize="36sp"
+      app:layout_constraintBottom_toTopOf="@id/splash_tagline"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/splash_logo" />
+
+    <TextView
+      android:id="@+id/splash_tagline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="8dp"
+      android:alpha="0"
+      android:letterSpacing="0.08"
+      android:text="@string/splash_tagline"
+      android:textColor="#A0A5B5"
+      android:textSize="14sp"
+      app:layout_constraintBottom_toTopOf="@id/splash_loader"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/splash_title" />
+
+    <ProgressBar
+      android:id="@+id/splash_loader"
+      style="?android:attr/progressBarStyleHorizontal"
+      android:layout_width="140dp"
+      android:layout_height="4dp"
+      android:layout_marginTop="28dp"
+      android:alpha="0"
+      android:indeterminate="true"
+      android:indeterminateTint="#00F2FE"
+      android:progressTint="#00F2FE"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/splash_tagline" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
